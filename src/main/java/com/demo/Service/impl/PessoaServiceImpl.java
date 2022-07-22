@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
@@ -60,11 +61,9 @@ public class PessoaServiceImpl implements PessoaService {
 	
 	public void validarPessoa(PessoaEntity p) {
 		
-		if(p.getNome() == null) throw new RegraNegocioException("O nome da pessoa não pode ser vazio");
+		if(p.getNome() == null || p.getNome().equals("")) throw new RegraNegocioException("O nome da pessoa não pode ser vazio");
 		
-		if(p.getNome().equals("")) throw new RegraNegocioException("O nome da pessoa não pode ser vazio");
-		
-		if(p.getDataNascimento() == null) throw new RegraNegocioException("A data de nascimento da pessoa não pode ser vazia");	
+		if(p.getDataNascimento() == null || p.getDataNascimento().equals("")) throw new RegraNegocioException("A data de nascimento da pessoa não pode ser vazia");	
 		
 	}
 
