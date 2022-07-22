@@ -19,6 +19,10 @@ import com.demo.Exceptions.RegraNegocioException;
 import com.demo.Service.EnderecoService;
 import com.demo.Service.PessoaService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 
 
 @RestController
@@ -32,7 +36,12 @@ public class PessoaResource {
 		this.service = service;
 	}
 	
-	@PostMapping
+	@PostMapping(produces = "application/json")
+	@ApiOperation(value = "Salvar pessoa")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Retorna a pessoa salva"),
+			@ApiResponse(code = 400, message = "Retorna a mensagem de erro")
+	})
 	public ResponseEntity salvar(@RequestBody PessoaEntity pessoa) {
 		PessoaEntity p = PessoaEntity.builder().nome(pessoa.getNome())
 											   .dataNascimento(pessoa.getDataNascimento()).build();
@@ -46,7 +55,12 @@ public class PessoaResource {
 	}
 	
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "application/json", consumes = "application/json")
+	@ApiOperation(value = "Editar pessoa")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Retorna a pessoa editada"),
+			@ApiResponse(code = 400, message = "Retorna a mensagem quando não encontra nenhuma pessoa com o id passado")
+	})
 	public ResponseEntity<PessoaEntity> editar(@PathVariable(value = "id") long id, @RequestBody PessoaEntity newPessoa) {
 		Optional<PessoaEntity> oldPessoa = service.buscarPessoa(id);
         if(oldPessoa.isPresent()){
@@ -60,8 +74,13 @@ public class PessoaResource {
     }
 	
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> Delete(@PathVariable(value = "id") long id)
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json", consumes = "application/json")
+	@ApiOperation(value = "Deletar pessoa")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Retorna ok apos deletar a pessoa"),
+			@ApiResponse(code = 400, message = "Retorna a mensagem se não encontrar nenhuma pessoa com o id passado")
+	})
+	public ResponseEntity<Object> Delete(@PathVariable(value = "id") long id)
     {
         Optional<PessoaEntity> pessoa = service.buscarPessoa(id);
         if(pessoa.isPresent()){
@@ -73,8 +92,14 @@ public class PessoaResource {
     }
 	
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<PessoaEntity> GetById(@PathVariable(value = "id") long id)
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")
+	@ApiOperation(value = "Buscar pessoa por id")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Retorna a pessoa do id especificado"),
+			@ApiResponse(code = 400, message = "Retorna a mensagem se não achar nenhuma pessoa com o id passado")
+	})
+	public ResponseEntity<PessoaEntity> GetById(@PathVariable(value = "id") long id)
     {
         Optional<PessoaEntity> pessoa = service.buscarPessoa(id);
         if(pessoa.isPresent())
@@ -84,7 +109,9 @@ public class PessoaResource {
     }
 	
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
+	@ApiOperation(value = "Listar pessoas")
+	@ApiResponse(code = 200, message = "Retorna a lista de pessoas")
     public List<PessoaEntity> Get() {
         return service.listarPessoas();
     }

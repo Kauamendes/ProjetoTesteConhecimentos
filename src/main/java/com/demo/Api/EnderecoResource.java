@@ -19,6 +19,10 @@ import com.demo.Exceptions.RegraNegocioException;
 import com.demo.Service.EnderecoService;
 import com.demo.Service.PessoaService;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping("/api/endereco")
 public class EnderecoResource {
@@ -32,7 +36,12 @@ private EnderecoService service;
 		this.service = service;
 	}
 	
-	@PostMapping(value = "/pessoa/{id}")
+	@PostMapping(value = "/pessoa/{id}", produces = "application/json", consumes = "application/json")
+	@ApiOperation(value = "Salvar endereco de uma pessoa")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Retorna o endereço salva"),
+			@ApiResponse(code = 400, message = "Retorna a mensagem de erro")
+	})
 	public ResponseEntity salvar(@RequestBody EnderecoEntity endereco, @PathVariable(value = "id") long id) {
 		Optional<PessoaEntity> p = pessoaservice.buscarPessoa(id);
 		EnderecoEntity end = new EnderecoEntity().builder().logradouro(endereco.getLogradouro())
@@ -48,8 +57,14 @@ private EnderecoService service;
 		}
 	}
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> Delete(@PathVariable(value = "id") long id)  {
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE, produces = "application/json", consumes = "application/json")
+	@ApiOperation(value = "Editar endereço")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Retorna o endereço editada"),
+			@ApiResponse(code = 404, message = "Retorna a mensagem quando não encontra nenhuma pessoa com o id passado")
+	})
+	public ResponseEntity<Object> Delete(@PathVariable(value = "id") long id)  {
 		
         Optional<EnderecoEntity> endereco = service.buscarEnderecoPorId(id);
         if(endereco.isPresent()){
@@ -61,8 +76,13 @@ private EnderecoService service;
     }
 	
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<EnderecoEntity> GetById(@PathVariable(value = "id") long id)
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")
+	@ApiOperation(value = "Buscar endereço por id")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Retorna o endereço com o id passado"),
+			@ApiResponse(code = 400, message = "Retorna a mensagem quando não encontra nenhuma pessoa com o id passado")
+	})
+	public ResponseEntity<EnderecoEntity> GetById(@PathVariable(value = "id") long id)
     {
         Optional<EnderecoEntity> endereco = service.buscarEnderecoPorId(id);
         if(endereco.isPresent())
@@ -71,13 +91,25 @@ private EnderecoService service;
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 	
-	@RequestMapping(value = "pessoa/{id}", method = RequestMethod.GET)
-    public List<EnderecoEntity> GetEnderecosPessoaById(@PathVariable(value = "id") long id) {
+	@RequestMapping(value = "pessoa/{id}", method = RequestMethod.GET, produces = "application/json", consumes = "application/json")
+	@ApiOperation(value = "Listar endereços de uma pessoa")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Retorna os endereços da pessoa"),
+			@ApiResponse(code = 400, message = "Retorna a mensagem quando não encontra nenhuma pessoa com o id passado")
+	})
+	public List<EnderecoEntity> GetEnderecosPessoaById(@PathVariable(value = "id") long id) {
         return service.listarEnderecosPessoa(id);
 	}
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-    public List<EnderecoEntity> GetEnderecosPessoaById() {
+	
+	
+	@RequestMapping(value = "/", method = RequestMethod.GET, produces = "application/json")
+	@ApiOperation(value = "Listar endereços")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Retorna a lista de enderecos"),
+			@ApiResponse(code = 400, message = "Retorna a mensagem quando não encontra nenhuma pessoa com o id especificado")
+	})
+	public List<EnderecoEntity> GetEnderecos() {
         return service.listarEnderecos();
 	}
 	
