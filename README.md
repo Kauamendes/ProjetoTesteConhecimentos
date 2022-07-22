@@ -1,2 +1,2 @@
 # ProjetoTesteConhecimentos
-projeto simples para teste de conhecimentos de Spring com Junit5
+projeto simples para teste de conhecimentos de uma REST API com Spring com Junit5
